@@ -8,14 +8,19 @@ const ICE_SERVERS = {
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
     {
-      urls: 'turn:openrelay.metered.ca:80',
-      username: 'openrelayproject',
-      credential: 'openrelayproject',
+      urls: 'turn:a.relay.metered.ca:80',
+      username: 'YOUR_METERED_USERNAME',
+      credential: 'YOUR_METERED_CREDENTIAL',
     },
     {
-      urls: 'turn:openrelay.metered.ca:443',
-      username: 'openrelayproject',
-      credential: 'openrelayproject',
+      urls: 'turn:a.relay.metered.ca:443',
+      username: 'YOUR_METERED_USERNAME',
+      credential: 'YOUR_METERED_CREDENTIAL',
+    },
+    {
+      urls: 'turns:a.relay.metered.ca:443',
+      username: 'YOUR_METERED_USERNAME',
+      credential: 'YOUR_METERED_CREDENTIAL',
     },
   ],
 };
