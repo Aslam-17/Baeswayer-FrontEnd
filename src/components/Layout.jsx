@@ -7,19 +7,17 @@ const NavItem = ({ to, icon, label, adminBadge }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 cursor-pointer select-none ${
-        isActive
-          ? 'nav-item-active font-semibold'
-          : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+      `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm transition-all duration-200 cursor-pointer select-none ${
+        isActive ? 'nav-item-active font-semibold' : 'text-[#a06080] hover:text-[#fce8f0] hover:bg-white/5'
       }`
     }
-    style={{ fontFamily: 'Syne, sans-serif', letterSpacing: '0.02em' }}
+    style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 600 }}
   >
-    <span className="text-lg">{icon}</span>
+    <span className="text-base">{icon}</span>
     <span>{label}</span>
     {adminBadge && (
-      <span className="ml-auto text-xs px-1.5 py-0.5 rounded-md font-mono"
-        style={{ background: 'rgba(45,212,191,0.1)', color: '#2dd4bf', fontSize: 10, letterSpacing: '0.05em' }}>
+      <span className="ml-auto pill"
+        style={{ background: 'rgba(240,50,116,0.12)', color: '#ff85b3', border: '1px solid rgba(240,50,116,0.2)', fontSize: 9, letterSpacing: '0.1em' }}>
         ADMIN
       </span>
     )}
@@ -33,25 +31,23 @@ const Layout = ({ children }) => {
 
   const handleLogout = () => {
     logout();
-    toast.success('Logged out successfully');
+    toast.success('Signed out');
     navigate('/login');
   };
 
-  const Sidebar = () => (
-    <aside className="flex flex-col h-full" style={{ background: 'linear-gradient(180deg, #071224 0%, #050d1a 100%)' }}>
+  const SidebarContent = () => (
+    <aside className="flex flex-col h-full" style={{ background: 'linear-gradient(180deg, #2a1020 0%, #1a0a10 100%)' }}>
       {/* Logo */}
-      <div className="px-6 py-6 border-b border-white/5">
+      <div className="px-5 py-5 border-b" style={{ borderColor: 'rgba(255,90,150,0.1)' }}>
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #14b8a6, #0d9488)' }}>
-            <span className="text-lg">👶</span>
+          <div className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg, #ff5a96, #c4195a)', boxShadow: '0 4px 16px rgba(240,50,116,0.4)' }}>
+            <span className="text-base">🌸</span>
           </div>
           <div>
-            <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 16, color: '#e2e8f0', letterSpacing: '-0.01em' }}>
-              BabyWatch
-            </h1>
-            <p style={{ fontSize: 10, color: '#475569', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.1em' }}>
-              MONITOR SYSTEM
+            <h1 className="logo-text" style={{ fontSize: 18, lineHeight: 1 }}>Baeswayer</h1>
+            <p style={{ fontSize: 9, color: '#a06080', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.15em', marginTop: 2 }}>
+              BABY MONITOR
             </p>
           </div>
         </div>
@@ -59,40 +55,40 @@ const Layout = ({ children }) => {
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        <p style={{ fontSize: 10, color: '#334155', fontFamily: 'Syne, sans-serif', letterSpacing: '0.12em', padding: '8px 12px 6px', fontWeight: 600 }}>
-          MAIN
+        <p style={{ fontSize: 10, color: '#a06080', fontFamily: 'Plus Jakarta Sans, sans-serif', letterSpacing: '0.12em', padding: '8px 12px 6px', fontWeight: 700, textTransform: 'uppercase' }}>
+          Monitor
         </p>
         <NavItem to="/dashboard" icon="📹" label="Live Monitor" />
         {isAdmin && (
           <>
-            <p style={{ fontSize: 10, color: '#334155', fontFamily: 'Syne, sans-serif', letterSpacing: '0.12em', padding: '16px 12px 6px', fontWeight: 600 }}>
-              ADMINISTRATION
+            <p style={{ fontSize: 10, color: '#a06080', fontFamily: 'Plus Jakarta Sans, sans-serif', letterSpacing: '0.12em', padding: '16px 12px 6px', fontWeight: 700, textTransform: 'uppercase' }}>
+              Admin
             </p>
             <NavItem to="/admin" icon="⚙️" label="Admin Panel" adminBadge />
           </>
         )}
       </nav>
 
-      {/* User info */}
-      <div className="px-3 py-4 border-t border-white/5">
-        <div className="flex items-center gap-3 px-3 py-3 rounded-xl mb-2"
-          style={{ background: 'rgba(255,255,255,0.03)' }}>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
-            style={{ background: 'linear-gradient(135deg, #14b8a6, #0891b2)', fontFamily: 'Syne, sans-serif' }}>
+      {/* User */}
+      <div className="px-3 py-4 border-t" style={{ borderColor: 'rgba(255,90,150,0.08)' }}>
+        <div className="flex items-center gap-3 px-3 py-3 rounded-2xl mb-2"
+          style={{ background: 'rgba(255,90,150,0.06)' }}>
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg, #ff5a96, #c4195a)', fontFamily: 'Playfair Display, serif' }}>
             {user?.name?.[0]?.toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="truncate" style={{ fontSize: 13, fontFamily: 'Syne, sans-serif', fontWeight: 600, color: '#cbd5e1' }}>
+            <p className="truncate" style={{ fontSize: 13, fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 700, color: '#fce8f0' }}>
               {user?.name}
             </p>
-            <p className="truncate" style={{ fontSize: 11, color: '#475569', fontFamily: 'JetBrains Mono, monospace' }}>
+            <p className="truncate" style={{ fontSize: 10, color: '#a06080', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.06em' }}>
               {user?.role?.toUpperCase()}
             </p>
           </div>
         </div>
         <button onClick={handleLogout}
           className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all hover:bg-red-500/10 hover:text-red-400"
-          style={{ fontFamily: 'Syne, sans-serif', color: '#475569', letterSpacing: '0.02em' }}>
+          style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', color: '#a06080', fontWeight: 600 }}>
           <span>🚪</span> Sign Out
         </button>
       </div>
@@ -100,29 +96,33 @@ const Layout = ({ children }) => {
   );
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: '#050d1a' }}>
+    <div className="flex h-screen overflow-hidden bg-mesh">
       {/* Desktop sidebar */}
-      <div className="hidden md:flex flex-col w-60 flex-shrink-0 border-r border-white/5">
-        <Sidebar />
+      <div className="hidden md:flex flex-col w-56 flex-shrink-0 border-r" style={{ borderColor: 'rgba(255,90,150,0.1)' }}>
+        <SidebarContent />
       </div>
 
-      {/* Mobile sidebar overlay */}
+      {/* Mobile overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setSidebarOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-64 flex flex-col border-r border-white/5">
-            <Sidebar />
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+          <div className="absolute left-0 top-0 bottom-0 w-60 flex flex-col border-r" style={{ borderColor: 'rgba(255,90,150,0.1)' }}>
+            <SidebarContent />
           </div>
         </div>
       )}
 
-      {/* Main content */}
+      {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Mobile topbar */}
-        <div className="md:hidden flex items-center gap-3 px-4 py-3 border-b border-white/5"
-          style={{ background: '#071224' }}>
-          <button onClick={() => setSidebarOpen(true)} className="text-slate-400 hover:text-slate-200 text-xl">☰</button>
-          <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 16, color: '#e2e8f0' }}>BabyWatch</span>
+        <div className="md:hidden flex items-center justify-between px-4 py-3 border-b"
+          style={{ background: 'rgba(42,16,32,0.9)', borderColor: 'rgba(255,90,150,0.1)', backdropFilter: 'blur(10px)' }}>
+          <button onClick={() => setSidebarOpen(true)} className="text-pink-300 text-xl p-1">☰</button>
+          <h1 className="logo-text" style={{ fontSize: 20 }}>Baeswayer</h1>
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, #ff5a96, #c4195a)' }}>
+            <span style={{ fontSize: 14 }}>🌸</span>
+          </div>
         </div>
 
         <main className="flex-1 overflow-y-auto">
