@@ -8,12 +8,12 @@ import toast from 'react-hot-toast';
 const tabs = ['users', 'logs', 'stats'];
 
 const ConfirmModal = ({ message, onConfirm, onCancel }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(5,13,26,0.85)' }}>
-    <div className="card p-6 max-w-sm w-full animate-slide-up" style={{ border: '1px solid rgba(239,68,68,0.3)' }}>
-      <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 18, color: '#e2e8f0', marginBottom: 12 }}>
+  <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(26,10,16,0.85)', backdropFilter: 'blur(8px)' }}>
+    <div className="card p-6 max-w-sm w-full animate-slide-up" style={{ border: '1px solid rgba(239,68,68,0.25)' }}>
+      <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 700, fontSize: 20, color: '#fce8f0', marginBottom: 12, fontStyle: 'italic' }}>
         Confirm Action
       </h3>
-      <p style={{ fontSize: 14, color: '#94a3b8', marginBottom: 24, lineHeight: 1.6 }}>{message}</p>
+      <p style={{ fontSize: 14, color: '#a06080', marginBottom: 24, lineHeight: 1.6 }}>{message}</p>
       <div className="flex gap-3">
         <button onClick={onConfirm} className="btn-danger flex-1 py-2.5">Confirm</button>
         <button onClick={onCancel} className="btn-ghost flex-1 py-2.5">Cancel</button>
@@ -32,29 +32,26 @@ const AddUserModal = ({ onClose, onCreated }) => {
     setLoading(true);
     try {
       await api.post('/users', form);
-      toast.success('User created!');
-      onCreated();
-      onClose();
+      toast.success('User created! 🌸');
+      onCreated(); onClose();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create user');
-    } finally {
-      setLoading(false);
-    }
+      toast.error(err.response?.data?.message || 'Failed');
+    } finally { setLoading(false); }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(5,13,26,0.85)' }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(26,10,16,0.85)', backdropFilter: 'blur(8px)' }}>
       <div className="card p-6 max-w-sm w-full animate-slide-up">
         <div className="flex items-center justify-between mb-6">
-          <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 18, color: '#e2e8f0' }}>
+          <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 700, fontSize: 20, color: '#fce8f0', fontStyle: 'italic' }}>
             Add New User
           </h3>
-          <button onClick={onClose} style={{ color: '#475569', fontSize: 20 }}>×</button>
+          <button onClick={onClose} style={{ color: '#a06080', fontSize: 22 }}>×</button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           {[['name','Full Name','text','Jane Smith'],['email','Email','email','jane@example.com'],['password','Password','password','Min. 6 chars']].map(([key,label,type,ph]) => (
             <div key={key}>
-              <label style={{ display:'block', fontSize:11, fontFamily:'Syne,sans-serif', fontWeight:600, color:'#64748b', marginBottom:6, letterSpacing:'0.06em', textTransform:'uppercase' }}>
+              <label style={{ display:'block', fontSize:11, fontFamily:'Plus Jakarta Sans,sans-serif', fontWeight:700, color:'#a06080', marginBottom:7, letterSpacing:'0.08em', textTransform:'uppercase' }}>
                 {label}
               </label>
               <input type={type} className="input-field" placeholder={ph} value={form[key]}
@@ -62,16 +59,16 @@ const AddUserModal = ({ onClose, onCreated }) => {
             </div>
           ))}
           <div>
-            <label style={{ display:'block', fontSize:11, fontFamily:'Syne,sans-serif', fontWeight:600, color:'#64748b', marginBottom:6, letterSpacing:'0.06em', textTransform:'uppercase' }}>
+            <label style={{ display:'block', fontSize:11, fontFamily:'Plus Jakarta Sans,sans-serif', fontWeight:700, color:'#a06080', marginBottom:7, letterSpacing:'0.08em', textTransform:'uppercase' }}>
               Role
             </label>
-            <select className="input-field" value={form.role} onChange={e => setForm({...form, role:e.target.value})}>
+            <select className="input-field" value={form.role} onChange={e => setForm({...form,role:e.target.value})}>
               <option value="user">User (Parent)</option>
               <option value="admin">Admin</option>
             </select>
           </div>
           <button type="submit" className="btn-primary w-full" disabled={loading}>
-            {loading ? 'Creating...' : 'Create User'}
+            {loading ? 'Creating...' : 'Create User 🌸'}
           </button>
         </form>
       </div>
@@ -87,122 +84,92 @@ const AdminPage = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [confirm, setConfirm] = useState(null);
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [showAdd, setShowAdd] = useState(false);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
-    try {
-      const { data } = await api.get('/users');
-      setUsers(data.users);
-    } catch { toast.error('Failed to load users'); }
+    try { const { data } = await api.get('/users'); setUsers(data.users); }
+    catch { toast.error('Failed to load users'); }
     finally { setLoading(false); }
   }, []);
 
   const fetchLogs = useCallback(async () => {
     setLoading(true);
-    try {
-      const { data } = await api.get('/logs?limit=100');
-      setLogs(data.logs);
-    } catch { toast.error('Failed to load logs'); }
+    try { const { data } = await api.get('/logs?limit=100'); setLogs(data.logs); }
+    catch { toast.error('Failed to load logs'); }
     finally { setLoading(false); }
   }, []);
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
-    try {
-      const { data } = await api.get('/logs/stats');
-      setStats(data);
-    } catch { toast.error('Failed to load stats'); }
+    try { const { data } = await api.get('/logs/stats'); setStats(data); }
+    catch { toast.error('Failed to load stats'); }
     finally { setLoading(false); }
   }, []);
 
   useEffect(() => {
     if (activeTab === 'users') fetchUsers();
     else if (activeTab === 'logs') fetchLogs();
-    else if (activeTab === 'stats') fetchStats();
+    else fetchStats();
   }, [activeTab, fetchUsers, fetchLogs, fetchStats]);
 
-  const handleDeleteUser = (userId) => {
-    setConfirm({
-      message: 'Are you sure you want to delete this user? This action cannot be undone.',
-      onConfirm: async () => {
-        try {
-          await api.delete(`/users/${userId}`);
-          toast.success('User deleted');
-          fetchUsers();
-        } catch (err) { toast.error(err.response?.data?.message || 'Failed to delete'); }
-        setConfirm(null);
-      },
-    });
+  const handleDelete = (userId) => setConfirm({
+    message: 'Are you sure you want to delete this user? This cannot be undone.',
+    onConfirm: async () => {
+      try { await api.delete(`/users/${userId}`); toast.success('User deleted'); fetchUsers(); }
+      catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
+      setConfirm(null);
+    },
+  });
+
+  const handleRole = async (userId, role) => {
+    try { await api.put(`/users/${userId}`, { role }); toast.success('Role updated'); fetchUsers(); }
+    catch { toast.error('Failed'); }
   };
 
-  const handleRoleChange = async (userId, newRole) => {
-    try {
-      await api.put(`/users/${userId}`, { role: newRole });
-      toast.success('Role updated');
-      fetchUsers();
-    } catch { toast.error('Failed to update role'); }
+  const handleToggle = async (userId, isActive) => {
+    try { await api.put(`/users/${userId}`, { isActive: !isActive }); toast.success(`Account ${isActive ? 'disabled' : 'enabled'}`); fetchUsers(); }
+    catch { toast.error('Failed'); }
   };
 
-  const handleToggleActive = async (userId, isActive) => {
-    try {
-      await api.put(`/users/${userId}`, { isActive: !isActive });
-      toast.success(`Account ${isActive ? 'deactivated' : 'activated'}`);
-      fetchUsers();
-    } catch { toast.error('Failed to update status'); }
-  };
-
-  const handleClearLogs = () => {
-    setConfirm({
-      message: 'Clear all activity logs? This cannot be undone.',
-      onConfirm: async () => {
-        try {
-          await api.delete('/logs');
-          toast.success('Logs cleared');
-          fetchLogs();
-        } catch { toast.error('Failed to clear logs'); }
-        setConfirm(null);
-      },
-    });
-  };
+  const handleClearLogs = () => setConfirm({
+    message: 'Clear all activity logs? This cannot be undone.',
+    onConfirm: async () => {
+      try { await api.delete('/logs'); toast.success('Logs cleared'); fetchLogs(); }
+      catch { toast.error('Failed'); }
+      setConfirm(null);
+    },
+  });
 
   return (
-    <div className="p-6 space-y-6 animate-fade-in">
+    <div className="p-4 md:p-6 space-y-5 animate-fade-in">
       {confirm && <ConfirmModal {...confirm} onCancel={() => setConfirm(null)} />}
-      {showAddModal && <AddUserModal onClose={() => setShowAddModal(false)} onCreated={fetchUsers} />}
+      {showAdd && <AddUserModal onClose={() => setShowAdd(false)} onCreated={fetchUsers} />}
 
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 26, color: '#e2e8f0', letterSpacing: '-0.02em' }}>
+          <h2 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 700, fontSize: 26, color: '#fce8f0', fontStyle: 'italic' }}>
             Admin Panel
           </h2>
-          <p style={{ fontSize: 14, color: '#475569', marginTop: 4 }}>
-            System management and monitoring
-          </p>
+          <p style={{ fontSize: 13, color: '#a06080', marginTop: 4 }}>System management</p>
         </div>
-        <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg"
-          style={{ background: 'rgba(45,212,191,0.08)', border: '1px solid rgba(45,212,191,0.15)' }}>
-          <span style={{ fontSize: 10, fontFamily: 'Syne, sans-serif', fontWeight: 700, color: '#2dd4bf', letterSpacing: '0.1em' }}>
-            ⚙️ ADMIN
-          </span>
+        <span className="pill" style={{ background: 'rgba(240,50,116,0.1)', color: '#ff85b3', border: '1px solid rgba(240,50,116,0.2)', fontSize: 10, padding: '6px 14px' }}>
+          ⚙️ ADMIN
         </span>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 p-1 rounded-xl w-fit" style={{ background: '#071224' }}>
+      <div className="flex gap-1 p-1 rounded-2xl w-fit" style={{ background: 'rgba(42,16,32,0.8)', border: '1px solid rgba(255,90,150,0.1)' }}>
         {tabs.map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
+          <button key={tab} onClick={() => setActiveTab(tab)}
             style={{
-              fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: 13,
-              padding: '8px 20px', borderRadius: 10, transition: 'all 0.2s',
-              background: activeTab === tab ? 'linear-gradient(135deg, #14b8a6, #0d9488)' : 'transparent',
-              color: activeTab === tab ? 'white' : '#475569',
-              letterSpacing: '0.02em', textTransform: 'capitalize', border: 'none', cursor: 'pointer',
-            }}
-          >
+              fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 700, fontSize: 13,
+              padding: '8px 18px', borderRadius: 14, transition: 'all 0.2s', border: 'none', cursor: 'pointer',
+              background: activeTab === tab ? 'linear-gradient(135deg, #ff5a96, #c4195a)' : 'transparent',
+              color: activeTab === tab ? 'white' : '#a06080',
+              boxShadow: activeTab === tab ? '0 4px 16px rgba(240,50,116,0.35)' : 'none',
+            }}>
             {tab === 'users' ? '👥 Users' : tab === 'logs' ? '📋 Logs' : '📊 Stats'}
           </button>
         ))}
@@ -211,31 +178,29 @@ const AdminPage = () => {
       {/* Users Tab */}
       {activeTab === 'users' && (
         <div className="card overflow-hidden">
-          <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between">
+          <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'rgba(255,90,150,0.08)' }}>
             <div>
-              <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 15, color: '#e2e8f0' }}>
-                All Users
-              </h3>
-              <p style={{ fontSize: 12, color: '#475569', marginTop: 2 }}>{users.length} accounts</p>
+              <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 700, fontSize: 16, color: '#fce8f0', fontStyle: 'italic' }}>All Users</h3>
+              <p style={{ fontSize: 12, color: '#a06080', marginTop: 2 }}>{users.length} accounts</p>
             </div>
-            <button onClick={() => setShowAddModal(true)} className="btn-primary text-sm py-2 px-4 flex items-center gap-2">
+            <button onClick={() => setShowAdd(true)} className="btn-primary text-sm py-2 px-4 flex items-center gap-2">
               <span>+</span> Add User
             </button>
           </div>
-
           {loading ? (
             <div className="flex justify-center py-12">
-              <div className="w-8 h-8 border-2 border-teal-400 border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin"
+                style={{ borderColor: 'rgba(255,90,150,0.2)', borderTopColor: '#ff5a96' }} />
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="data-table w-full">
                 <thead>
-                  <tr style={{ background: 'rgba(5,13,26,0.5)' }}>
+                  <tr style={{ background: 'rgba(26,10,16,0.5)' }}>
                     <th className="text-left">User</th>
                     <th className="text-left">Role</th>
                     <th className="text-left">Status</th>
-                    <th className="text-left">Joined</th>
+                    <th className="text-left hidden sm:table-cell">Joined</th>
                     <th className="text-left">Actions</th>
                   </tr>
                 </thead>
@@ -244,32 +209,25 @@ const AdminPage = () => {
                     <tr key={u._id}>
                       <td>
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-                            style={{ background: 'linear-gradient(135deg, #14b8a6, #0891b2)', fontFamily: 'Syne, sans-serif' }}>
+                          <div className="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
+                            style={{ background: 'linear-gradient(135deg, #ff5a96, #c4195a)', fontFamily: 'Playfair Display, serif' }}>
                             {u.name?.[0]?.toUpperCase()}
                           </div>
                           <div>
-                            <p style={{ fontSize: 13, fontWeight: 600, color: '#cbd5e1', fontFamily: 'Syne, sans-serif' }}>
+                            <p style={{ fontSize: 13, fontWeight: 700, color: '#fce8f0', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
                               {u.name}
                               {u._id === currentUser?.id && (
-                                <span style={{ marginLeft: 6, fontSize: 10, color: '#2dd4bf', fontFamily: 'JetBrains Mono, monospace' }}>(you)</span>
+                                <span style={{ marginLeft: 6, fontSize: 9, color: '#ff85b3', fontFamily: 'JetBrains Mono, monospace' }}>(you)</span>
                               )}
                             </p>
-                            <p style={{ fontSize: 11, color: '#475569', fontFamily: 'JetBrains Mono, monospace' }}>{u.email}</p>
+                            <p style={{ fontSize: 11, color: '#a06080', fontFamily: 'JetBrains Mono, monospace' }}>{u.email}</p>
                           </div>
                         </div>
                       </td>
                       <td>
-                        <select
-                          value={u.role}
-                          onChange={e => handleRoleChange(u._id, e.target.value)}
+                        <select value={u.role} onChange={e => handleRole(u._id, e.target.value)}
                           disabled={u._id === currentUser?.id}
-                          style={{
-                            background: 'rgba(10,26,51,0.8)', border: '1px solid #1e3a5f',
-                            borderRadius: 8, color: '#94a3b8', padding: '4px 10px',
-                            fontFamily: 'JetBrains Mono, monospace', fontSize: 12, cursor: 'pointer',
-                          }}
-                        >
+                          style={{ background: 'rgba(255,90,150,0.06)', border: '1px solid rgba(255,90,150,0.15)', borderRadius: 8, color: '#e8b4c8', padding: '4px 10px', fontFamily: 'JetBrains Mono, monospace', fontSize: 12, cursor: 'pointer' }}>
                           <option value="user">User</option>
                           <option value="admin">Admin</option>
                         </select>
@@ -277,35 +235,31 @@ const AdminPage = () => {
                       <td>
                         <span style={{
                           display: 'inline-flex', alignItems: 'center', gap: 5,
-                          background: u.isActive ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)',
-                          border: `1px solid ${u.isActive ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}`,
+                          background: u.isActive ? 'rgba(52,211,153,0.08)' : 'rgba(239,68,68,0.08)',
+                          border: `1px solid ${u.isActive ? 'rgba(52,211,153,0.2)' : 'rgba(239,68,68,0.2)'}`,
                           borderRadius: 999, padding: '2px 10px',
-                          fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: 11,
-                          color: u.isActive ? '#22c55e' : '#ef4444',
+                          fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 700, fontSize: 11,
+                          color: u.isActive ? '#34d399' : '#f87171',
                         }}>
-                          <span style={{ width: 5, height: 5, borderRadius: '50%', background: u.isActive ? '#22c55e' : '#ef4444', display: 'inline-block' }} />
+                          <span style={{ width: 5, height: 5, borderRadius: '50%', background: u.isActive ? '#34d399' : '#f87171', display: 'inline-block' }} />
                           {u.isActive ? 'Active' : 'Disabled'}
                         </span>
                       </td>
-                      <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: '#475569' }}>
+                      <td className="hidden sm:table-cell" style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: '#a06080' }}>
                         {new Date(u.createdAt).toLocaleDateString()}
                       </td>
                       <td>
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleToggleActive(u._id, u.isActive)}
+                          <button onClick={() => handleToggle(u._id, u.isActive)}
                             disabled={u._id === currentUser?.id}
                             className="btn-ghost text-xs py-1.5 px-3"
-                            style={{ opacity: u._id === currentUser?.id ? 0.3 : 1 }}
-                          >
+                            style={{ opacity: u._id === currentUser?.id ? 0.3 : 1 }}>
                             {u.isActive ? 'Disable' : 'Enable'}
                           </button>
-                          <button
-                            onClick={() => handleDeleteUser(u._id)}
+                          <button onClick={() => handleDelete(u._id)}
                             disabled={u._id === currentUser?.id}
                             className="btn-danger text-xs py-1.5 px-3"
-                            style={{ opacity: u._id === currentUser?.id ? 0.3 : 1 }}
-                          >
+                            style={{ opacity: u._id === currentUser?.id ? 0.3 : 1 }}>
                             Delete
                           </button>
                         </div>
@@ -322,15 +276,13 @@ const AdminPage = () => {
       {/* Logs Tab */}
       {activeTab === 'logs' && (
         <div className="card overflow-hidden">
-          <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between">
+          <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'rgba(255,90,150,0.08)' }}>
             <div>
-              <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 15, color: '#e2e8f0' }}>
-                System Logs
-              </h3>
-              <p style={{ fontSize: 12, color: '#475569', marginTop: 2 }}>All cry detection events</p>
+              <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 700, fontSize: 16, color: '#fce8f0', fontStyle: 'italic' }}>System Logs</h3>
+              <p style={{ fontSize: 12, color: '#a06080', marginTop: 2 }}>All cry detection events</p>
             </div>
             <button onClick={handleClearLogs} className="btn-danger text-sm py-2 px-4 flex items-center gap-2">
-              🗑 Clear All
+              🗑 Clear
             </button>
           </div>
           <ActivityLog logs={logs} loading={loading} />
@@ -339,39 +291,35 @@ const AdminPage = () => {
 
       {/* Stats Tab */}
       {activeTab === 'stats' && stats && (
-        <div className="space-y-6">
+        <div className="space-y-5">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
-              { label: 'Total Events', value: stats.stats.total, icon: '📋', color: '#2dd4bf' },
-              { label: 'Crying', value: stats.stats.crying, icon: '😢', color: '#ef4444' },
-              { label: 'Silent', value: stats.stats.silent, icon: '😌', color: '#22c55e' },
-              { label: 'Sleeping', value: stats.stats.sleeping, icon: '😴', color: '#60a5fa' },
+              { label: 'Total Events', value: stats.stats.total, icon: '📋', accent: '#ff5a96' },
+              { label: 'Crying', value: stats.stats.crying, icon: '😢', accent: '#ef4444' },
+              { label: 'Silent', value: stats.stats.silent, icon: '😌', accent: '#34d399' },
+              { label: 'Sleeping', value: stats.stats.sleeping, icon: '😴', accent: '#93c5fd' },
             ].map(s => (
               <div key={s.label} className="card p-5">
                 <div className="flex items-center gap-3 mb-3">
-                  <span style={{ fontSize: 22 }}>{s.icon}</span>
-                  <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  <span style={{ fontSize: 20 }}>{s.icon}</span>
+                  <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: '#a06080', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                     {s.label}
                   </span>
                 </div>
-                <p style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 36, color: s.color, letterSpacing: '-0.03em' }}>
+                <p style={{ fontFamily: 'Playfair Display, serif', fontWeight: 700, fontSize: 38, color: s.accent, letterSpacing: '-0.03em' }}>
                   {s.value}
                 </p>
                 {stats.stats.total > 0 && (
-                  <p style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>
+                  <p style={{ fontSize: 12, color: '#a06080', marginTop: 4 }}>
                     {((s.value / stats.stats.total) * 100).toFixed(1)}% of total
                   </p>
                 )}
               </div>
             ))}
           </div>
-
-          {/* Recent logs */}
           <div className="card overflow-hidden">
-            <div className="px-5 py-4 border-b border-white/5">
-              <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 15, color: '#e2e8f0' }}>
-                Recent Events
-              </h3>
+            <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(255,90,150,0.08)' }}>
+              <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 700, fontSize: 16, color: '#fce8f0', fontStyle: 'italic' }}>Recent Events</h3>
             </div>
             <ActivityLog logs={stats.recent} loading={false} />
           </div>
